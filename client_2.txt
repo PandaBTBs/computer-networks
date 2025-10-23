@@ -1,0 +1,122 @@
+// Программа - клиент
+#include <iostream>
+#include <fstream>
+#include <string>
+#include <windows.h>
+using namespace std;
+
+struct EmployeeData {
+    char name[25];
+    int hoursWorked;
+    char status[20]; //"standart", "manager", "boss"
+};
+
+struct ServerResponse {
+    double salary;
+    char hoursDeviation[50]; //Сообщение об отклонении от нормы
+};
+
+int main() {
+    setlocale(LC_ALL, "RU");
+    const char* requestFileName = "D:\\REQUEST.bin";
+    const char* answerFileName = "D:\\ANSWER.bin";
+
+    // Получаем начальный размер файла ответов
+    long lastAnswerFileSize = 0;
+    ifstream initAnswerFile(answerFileName, ios::binary);
+    if (initAnswerFile.is_open()) {
+        initAnswerFile.seekg(0, ios::end);
+        lastAnswerFileSize = initAnswerFile.tellg();
+        initAnswerFile.close();
+        cout << "Начальный размер файла ответов: " << lastAnswerFileSize << " bytes" << endl;
+    }
+    else {
+        cout << "Ошибка получения файла LastSize" << endl;
+    }
+
+    while (true) {
+        EmployeeData employee;
+
+        cout << "\n=== Новый запрос ===" << endl;
+        cout << "Введите имя сотрудника: ";
+        cin >> employee.name;
+
+        cout << "Введите количество отработанных часов: ";
+        cin >> employee.hoursWorked;
+
+        cout << "Введите статус сотрудника(standart, manager, boss): ";
+        cin >> employee.status;
+
+        // Отправка запроса
+        ofstream requestFile;
+        requestFile.open(requestFileName, ios::binary | ios::app);
+        if (!requestFile.is_open()) {
+            cout << "Ошибка открытия файла запроса!" << endl;
+            Sleep(1000);
+            continue;
+        }
+        requestFile.write((char*)&employee, sizeof(EmployeeData));
+        requestFile.close();
+
+        cout << "Запрос отправлен. Ожидание ответа..." << endl;
+
+        // Ожидание ответа от сервера
+        bool responseReceived = false;
+        ServerResponse answer;
+
+        // Ждем изменения в файле ответов
+        while (!responseReceived) {
+            Sleep(200);
+
+            ifstream answerFile(answerFileName, ios::binary);
+            if (!answerFile.is_open()) {
+                cerr << "Ошибка открытия файла ответов!" << endl;
+                Sleep(1000);
+                continue;
+            }
+
+            answerFile.seekg(0, ios::end);
+            long currentAnswerFileSize = answerFile.tellg();
+
+            if (currentAnswerFileSize > lastAnswerFileSize) {
+                answerFile.seekg(lastAnswerFileSize, ios::beg);
+                answerFile.read((char*)&answer, sizeof(ServerResponse));
+
+                responseReceived = true;
+                lastAnswerFileSize = currentAnswerFileSize;
+                answerFile.close();
+            }
+            else {
+                answerFile.close();
+            }
+
+
+            //    if (!answerFile.eof() && answerFile.gcount() == sizeof(ServerResponse)) {
+            //        responseReceived = true;
+            //        lastAnswerFileSize = currentAnswerFileSize; 
+            //        answerFile.close();
+            //    }
+            //    else {
+            //        answerFile.close();
+            //        continue;
+            //    }
+            //}
+            //else {
+            //    answerFile.close();
+            //}
+        }
+
+        cout << "\n=== Результат для " << employee.name << " ===" << endl;
+        if (answer.salary >= 0) {
+            cout << "Зарплата: " << answer.salary << " рублей" << endl;
+            cout << "Отклонения от нормы: " << answer.hoursDeviation << endl;
+        }
+        else {
+            cout << "Ошибка: неизвестный статус сотрудника!" << endl;
+        }
+
+        cout << "=========================" << endl;
+    }
+
+    return 0;
+}
