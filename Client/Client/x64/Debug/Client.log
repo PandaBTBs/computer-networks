@@ -1,0 +1,3 @@
+﻿  Client.cpp
+J:\progectC++\test\Client\Client.cpp(122,37): warning C4244: '=': conversion from 'std::streamoff' to 'long', possible loss of data
+  Client.vcxproj -> J:\progectC++\test\Client\x64\Debug\Client.exe

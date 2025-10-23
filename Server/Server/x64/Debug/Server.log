@@ -1,0 +1,3 @@
+﻿  Server.cpp
+J:\progectC++\test\Server\Server.cpp(128,30): warning C4244: 'initializing': conversion from 'std::streamoff' to 'long', possible loss of data
+  Server.vcxproj -> J:\progectC++\test\Server\x64\Debug\Server.exe
