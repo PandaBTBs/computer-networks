@@ -57,19 +57,19 @@ int main() {
     while (true) {
         ifstream requestFile(REQUEST_FILE, ios::binary);
         requestFile.seekg(0, ios::end);
-        long currentFileSize = requestFile.tellg();
+        long currentFileSize = requestFile.tellg();// Эта строка получает текущую позицию указателя чтения, которая теперь находится в конце файла, и присваивает это значение переменной currentFileSize.
         requestFile.close();
 
         if (currentFileSize > lastFileSize) {
             // Обнаружен новый запрос
             requestFile.open(REQUEST_FILE, ios::binary);
-            requestFile.seekg(lastFileSize, ios::beg);
+            requestFile.seekg(lastFileSize, ios::beg); //еремещает указатель чтения в файле requestFile на позицию, определяемую значением lastFileSize, отсчитывая эту позицию от начала файла
 
             Student student;
             while (requestFile.read((char*)&student, sizeof(Student))) {
                 ScholarshipInfo scholarshipInfo = analyzeGrades(student);
 
-                ofstream answerFile(ANSWER_FILE, ios::binary | ios::app);
+                ofstream answerFile(ANSWER_FILE, ios::binary | ios::app);// открывет файл не стирая содержимое
                 answerFile.write((char*)&scholarshipInfo, sizeof(ScholarshipInfo));
                 answerFile.close();
 
@@ -88,5 +88,4 @@ int main() {
     }
 
     return 0;
-
 }
