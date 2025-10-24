@@ -70,7 +70,7 @@ int main() {
 
             ifstream answerFile(answerFileName, ios::binary);
             if (!answerFile.is_open()) {
-                cerr << "Ошибка открытия файла ответов!" << endl;
+                cout << "Ошибка открытия файла ответов!" << endl;
                 Sleep(1000);
                 continue;
             }
@@ -89,21 +89,6 @@ int main() {
             else {
                 answerFile.close();
             }
-
-
-            //    if (!answerFile.eof() && answerFile.gcount() == sizeof(ServerResponse)) {
-            //        responseReceived = true;
-            //        lastAnswerFileSize = currentAnswerFileSize; 
-            //        answerFile.close();
-            //    }
-            //    else {
-            //        answerFile.close();
-            //        continue;
-            //    }
-            //}
-            //else {
-            //    answerFile.close();
-            //}
         }
 
         cout << "\n=== Результат для " << employee.name << " ===" << endl;
