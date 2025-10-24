@@ -13,7 +13,7 @@ struct EmployeeData {
 
 struct ServerResponse {
     double salary;
-    char hoursDeviation[50]; // Сообщение об отклонении от нормы
+    char hoursDeviation[50];// Сообщение об отклонении от нормы
 };
 
 // Расчет зарплаты
@@ -94,7 +94,6 @@ int main() {
 
             ServerResponse response;
             response.salary = salary;
-
             strcpy_s(response.hoursDeviation, hoursDeviation.c_str());  
             // Copy string to char array (safer) -  Скопировать строку в массив символов (безопаснее)
             //Этот код использует функцию strcpy_s для копирования содержимого строки C++ hoursDeviation в буфер response.hoursDeviation
